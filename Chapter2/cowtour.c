@@ -28,6 +28,7 @@ int main(void) {
 
     FILE *fin = fopen("cowtour.in", "r");
     FILE *fout = fopen("cowtour.out", "w");
+    assert(fin != NULL && fout != NULL);
 
     fscanf(fin, "%d", &n);
     for (i = 0; i < n; i++) fscanf(fin, "%d%d", &point[i][0], &point[i][1]);
