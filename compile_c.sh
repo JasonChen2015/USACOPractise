@@ -19,6 +19,11 @@ if [ "$OutputFileName" == "" ]; then
 	exit 1
 fi
 
+if [ "$SourceName" == "$OutputFileName" ]; then
+    echo "Source file name \"$SourceName\" can not be same as output file name \"$OutputFileName\"!"
+    exit 1
+fi
+
 gcc -Wall $SourceName -o $OutputFileName
 
 echo -e "(`date +"%Y/%m/%d %H:%M:%S"`) Compile finish."
