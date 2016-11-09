@@ -13,7 +13,7 @@ int s[201];
 
 int main(void) {
     int k, n;
-    int i, j, t, p;
+    int i, j, t;
     int max;
 
     FILE *fin = fopen("stamps.in", "r");
@@ -38,7 +38,6 @@ int main(void) {
 
     // fill
     max = s[n - 1];
-    p = 0;
     for (i = 2; i <= k; i++) {
         for (j = 1; j <= max; j++) {
             if (a[j] == i - 1) {
@@ -46,7 +45,6 @@ int main(void) {
             }
         }
         max += s[n - 1];
-        p = 1 - p;
     }
 
     for (i = s[0]; i <= max; i++)
