@@ -13,26 +13,16 @@ int e[47000][3];  // record how to get to this status // 0: from which status 1:
 int queue[40330]; // record the status  //8! = 40320
 int matchCode;
 
-void trans1(int tmp[8]) {
-    int i, t;
-    for (i = 0; i < 4; i++) {
-        t = tmp[i]; tmp[i] = tmp[7 - i]; tmp[7 - i] = t;
-    }
-}
+const int tran[3][8] = {{8, 7, 6, 5, 4, 3, 2, 1},
+                        {4, 1, 2, 3, 6, 7, 8, 5},
+                        {1, 7, 2, 4, 5, 3, 6, 8}};
 
-void trans2(int tmp[8]) {
-    int i, t;
-    t = tmp[3];
-    for (i = 2; i >= 0; i--) tmp[i + 1] = tmp[i];
-    tmp[0] = t;
-    t = tmp[4];
-    for (i = 4; i < 7; i++) tmp[i] = tmp[i + 1];
-    tmp[7] = t;
-}
-
-void trans3(int tmp[8]) {
-    int t;
-    t = tmp[1]; tmp[1] = tmp[6]; tmp[6] = tmp[5]; tmp[5] = tmp[2]; tmp[2] = t;
+// transform the status array by using way n
+void trans(int n) {
+    int i;
+    int tmp[8];
+    for (i = 0; i < 8; i++) { tmp[i] = status[tran[n][i] - 1]; }
+    for (i = 0; i < 8; i++) { status[i] = tmp[i]; }
 }
 
 // get code from a status array, {1, 2, 3, 4, 5, 6, 7, 8} -> 1234567
@@ -66,6 +56,7 @@ int getHash(int statusCode) {
 
 int main() {
     int i, p, q, t;
+    int ok;
     int newStatusCode, oldStatusCode;
     FILE *fin = fopen("msquare.in", "r");
     FILE *fout = fopen("msquare.out", "w");
@@ -74,67 +65,36 @@ int main() {
         fscanf(fin, "%d", &status[i]);
     }
     matchCode = getStatusCode(status);
-    if (matchCode == 1234567) {
-        // no move
-        fprintf(fout, "0\n\n");
-        fclose(fin);
-        fclose(fout);
-        return 0;
-    }
 
     // BFS
     for (i = 0; i < 8; i++) { status[i] = i + 1; }
-    p = -1;
-    q = 0;
+    p = -1; q = 0;
     queue[q] = getStatusCode(status);
     e[getHash(queue[q])][2] = queue[q];
-    while (p <= q) {
+    ok = matchCode == queue[q];
+    while (p <= q && !ok) {
         p++;
-        // transformation 1
         getStatus(p);
         oldStatusCode = getStatusCode(status);
-        trans1(status);
-        newStatusCode = getStatusCode(status);
-        t = getHash(newStatusCode);
-        if (e[t][2] != newStatusCode) {
-            // record to hash array
-            e[t][0] = oldStatusCode;
-            e[t][1] = 1;
-            e[t][2] = newStatusCode;
-            // insert new status to queue
-            q++;
-            queue[q] = newStatusCode;
-            if (matchCode == queue[q]) break;
-        }
-        // transformation 2
-        getStatus(p);
-        trans2(status);
-        newStatusCode = getStatusCode(status);
-        t = getHash(newStatusCode);
-        if (e[t][2] != newStatusCode) {
-            // record to hash array
-            e[t][0] = oldStatusCode;
-            e[t][1] = 2;
-            e[t][2] = newStatusCode;
-            // insert new status to queue
-            q++;
-            queue[q] = newStatusCode;
-            if (matchCode == queue[q]) break;
-        }
-       // transformation 3
-        getStatus(p);
-        trans3(status);
-        newStatusCode = getStatusCode(status);
-        t = getHash(newStatusCode);
-        if (e[t][2] != newStatusCode) {
-            // record to hash array
-            e[t][0] = oldStatusCode;
-            e[t][1] = 3;
-            e[t][2] = newStatusCode;
-            // insert new status to queue
-            q++;
-            queue[q] = newStatusCode;
-            if (matchCode == queue[q]) break;
+        // transformation
+        for (i = 0; i < 3; i++) {
+            getStatus(p);
+            trans(i);
+            newStatusCode = getStatusCode(status);
+            t = getHash(newStatusCode);
+            if (e[t][2] != newStatusCode) {
+                // record to hash array
+                e[t][0] = oldStatusCode;
+                e[t][1] = i + 1;
+                e[t][2] = newStatusCode;
+                // insert new status to queue
+                q++;
+                queue[q] = newStatusCode;
+                if (matchCode == queue[q]) {
+                    ok = 1;
+                    break;
+                }
+            }
         }
     }
 
