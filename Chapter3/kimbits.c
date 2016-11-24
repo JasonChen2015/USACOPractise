@@ -40,6 +40,9 @@ int main() {
     c[n] = '\0';
 
     fprintf(fout, "%s\n", c);
+
+    fclose(fin);
+    fclose(fout);
     return 0;
 }
 
