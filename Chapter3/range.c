@@ -8,6 +8,31 @@ TASK: range
 
 #define MAXN 250
 
+/*
+ * use dp.
+ *
+ * sq[c] : the max square til column c on this row, initial value is 0
+ *
+ *    for (r = 1; r <= n; r++) {
+ *        sqpr = 0;
+ *        sq[0] = 0;
+ *        for (c = 1; c <= n; c++) {
+ *            if (getc(fin) == '0') {
+ *                sqpr = 0;
+ *                sq[c] = 0;
+ *                continue
+ *            }
+ *            t = 1 + min3(sq[c - 1], sqpr, sq[c]);
+ *            sqpr = sq[c];
+ *            sq[c] = t;
+ *            if (sq[c] >= 2) numsq[sq[c]]++; // only count max squares, for this row
+ *        }
+ *    }
+ *    // count all
+ *    for (i = n - 1; i >= 2; i--) numsq[i] += numsq[i + 1];
+ *
+ */
+
 int field[MAXN + 1][MAXN + 1]; // field[row][column]
 int n, maxsize;
 int sum[MAXN + 1];
