@@ -8,6 +8,13 @@ TASK: game1
 
 #define MAXPOS 100
 
+/*
+ * dp solution:
+ *    best[i][j] means player get the best score in range [i, j]
+ *    best[i][j] = (total[j] - total[i - 1]) - min(best[i - 1][j], best[i][j - 1])
+ */
+
+
 int a[2][MAXPOS + 1][MAXPOS + 1];
 int seq[MAXPOS + 1];
 
