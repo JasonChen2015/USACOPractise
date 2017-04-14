@@ -9,6 +9,18 @@ TASK: fence9
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 
+/*
+ * Other solution:
+ *
+ *   Pick's Theorem states that if we have a polygon with lattice points as vertices, then:
+ *
+ *                                      A = I + B / 2 - 1
+ *
+ *   where A is the area of the polygon, I is the number of lattice points inside of the polygon,
+ *   and B is the number of lattice points on the boundary of the polygon
+ *
+ */
+
 int gcd(int x, int y) {
     if (y == 0) {
         return x;
